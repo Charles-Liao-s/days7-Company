@@ -31,6 +31,11 @@ public class CompanyController {
                 .orElse(null);
     }
 
+    @GetMapping
+    public List<Company> index() {
+        return new ArrayList<>(companies); // 返回副本以避免并发修改异常
+    }
+
     public void clear() {
         companies.clear();
     }

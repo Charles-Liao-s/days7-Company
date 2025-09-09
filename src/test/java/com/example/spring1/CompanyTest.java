@@ -56,4 +56,20 @@ public class CompanyTest {
                 .andExpect(jsonPath("$.name").value("Spring"));
     }
 
+    @Test
+    public void should_return_company_list_when_list_all() throws Exception {
+        Company expect1 = companyController.create(new Company(null, "Spring"));
+        Company expect2 = companyController.create(new Company(null, "Java"));
+
+        MockHttpServletRequestBuilder request = get("/companies").contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$.[0].id").value(expect1.id()))
+                .andExpect(jsonPath("$.[0].name").value(expect1.name()))
+                .andExpect(jsonPath("$.[1].id").value(expect2.id()))
+                .andExpect(jsonPath("$.[1].name").value(expect2.name()));
+    }
+
 }
