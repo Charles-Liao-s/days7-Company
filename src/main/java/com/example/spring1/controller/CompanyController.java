@@ -57,6 +57,16 @@ public class CompanyController {
         companies.removeIf(company -> Objects.equals(company.id(), id));
     }
 
+    @GetMapping(params = {"page", "size"})
+    public List<Company> pageQuery(@RequestParam int page, @RequestParam int size) {
+        int fromIndex = (page - 1) * size;
+        int toIndex = Math.min(fromIndex + size, companies.size());
+        if (fromIndex >= companies.size()) {
+            return new ArrayList<>();
+        }
+        return companies.subList(fromIndex, toIndex);
+    }
+
     public void clear() {
         companies.clear();
     }

@@ -101,4 +101,21 @@ public class CompanyTest {
                 .andExpect(status().isNoContent());
     }
 
+    @Test
+    public void should_return_page_query_when_get_company_by_page() throws Exception {
+        Company expect1 = companyController.create(new Company(null, "Spring"));
+        Company expect2 = companyController.create(new Company(null, "Java"));
+        Company expect3 = companyController.create(new Company(null, "Kotlin"));
+
+        MockHttpServletRequestBuilder request = get("/companies?page=1&size=2").contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$.[0].id").value(expect1.id()))
+                .andExpect(jsonPath("$.[0].name").value(expect1.name()))
+                .andExpect(jsonPath("$.[1].id").value(expect2.id()))
+                .andExpect(jsonPath("$.[1].name").value(expect2.name()));
+    }
+
 }
