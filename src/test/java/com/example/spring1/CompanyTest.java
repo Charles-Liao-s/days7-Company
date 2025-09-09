@@ -90,4 +90,15 @@ public class CompanyTest {
                 .andExpect(jsonPath("$.name").value("Spring Boot"));
     }
 
+    @Test
+    public void should_return_no_content_when_delete_company() throws Exception {
+        Company expect = companyController.create(new Company(null, "Spring"));
+        String id = "/" + expect.id();
+
+        MockHttpServletRequestBuilder request = delete("/companies" + id).contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNoContent());
+    }
+
 }

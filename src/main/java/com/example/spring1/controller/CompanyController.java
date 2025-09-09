@@ -51,6 +51,12 @@ public class CompanyController {
         return null;
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Integer id) {
+        companies.removeIf(company -> Objects.equals(company.id(), id));
+    }
+
     public void clear() {
         companies.clear();
     }
