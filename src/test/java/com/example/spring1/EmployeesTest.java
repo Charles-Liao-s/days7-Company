@@ -84,7 +84,47 @@ public class EmployeesTest {
             .andExpect(jsonPath("$.[0].salary").value(expect.salary()));
   }
 
+  @Test
+  public void should_return_employee_list_when_list_all() throws Exception {
+    Employee expect1 = employeeController.create(new Employee(null, "John", 32, "male", 5000.0));
+    Employee expect2 = employeeController.create(new Employee(null, "Jane", 28, "male", 6000.0));
+    MockHttpServletRequestBuilder request = get("/employees")
+            .contentType(MediaType.APPLICATION_JSON);
+    mockMvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$.[0].id").value(expect1.id()))
+            .andExpect(jsonPath("$.[0].name").value(expect1.name()))
+            .andExpect(jsonPath("$.[0].age").value(expect1.age()))
+            .andExpect(jsonPath("$.[0].gender").value(expect1.gender()))
+            .andExpect(jsonPath("$.[0].salary").value(expect1.salary()))
+            .andExpect(jsonPath("$.[1].id").value(expect2.id()))
+            .andExpect(jsonPath("$.[1].name").value(expect2.name()))
+            .andExpect(jsonPath("$.[1].age").value(expect2.age()))
+            .andExpect(jsonPath("$.[1].gender").value(expect2.gender()))
+            .andExpect(jsonPath("$.[1].salary").value(expect2.salary()));
+  }
 
-
+  @Test
+    public void should_return_updated_employee_when_update_employee() throws Exception {
+        Employee employee = employeeController.create(new Employee(null, "John", 32, "male", 5000.0));
+        String id = "/" + employee.id();
+        String requestBody = """
+                {
+                "name": "John",
+                "age": 33,
+                "gender": "Male",
+                "salary": 6000.0
+                }
+        """;
+        MockHttpServletRequestBuilder request = put("/employees" + id).contentType(MediaType.APPLICATION_JSON).content(requestBody);
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(employee.id()))
+                .andExpect(jsonPath("$.name").value("John"))
+                .andExpect(jsonPath("$.age").value(33))
+                .andExpect(jsonPath("$.gender").value("Male"))
+                .andExpect(jsonPath("$.salary").value(6000.0));
+            }
 
 }

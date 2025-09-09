@@ -38,8 +38,27 @@ public class EmployeeController {
 
     @GetMapping
     public List<Employee> index(@RequestParam(required = false) String gender){
+        if (gender == null) {
+            return employees;
+        }
         return employees.stream()
                 .filter(employee -> Objects.equals(employee.gender(), gender))
                 .toList();
     }
+
+    @PutMapping("/{id}")
+    public Employee update(@PathVariable Integer id, @RequestBody Employee employee) {
+        Employee existingEmployee = employees.stream()
+                .filter(e -> Objects.equals(e.id(), id))
+                .findFirst()
+                .orElse(null);
+        if (existingEmployee != null) {
+            employees.remove(existingEmployee);
+            Employee updatedEmployee = new Employee(id, employee.name(), employee.age(), employee.gender(), employee.salary());
+            employees.add(updatedEmployee);
+            return updatedEmployee;
+        }
+        return null;
+    }
+
 }
