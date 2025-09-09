@@ -22,7 +22,18 @@ public class CompanyController {
         return newCompany;
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Company get(@PathVariable Integer id) {
+        return companies.stream()
+                .filter(company -> Objects.equals(company.id(), id))
+                .findFirst()
+                .orElse(null);
+    }
+
     public void clear() {
         companies.clear();
     }
+
+
 }

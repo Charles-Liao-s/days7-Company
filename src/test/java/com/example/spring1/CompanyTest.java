@@ -44,4 +44,16 @@ public class CompanyTest {
                 .andExpect(jsonPath("$.name").value("Spring"));
     }
 
+    @Test
+    public void should_return_company_when_get_company_id_correct() throws Exception {
+        Company company = companyController.create(new Company(null, "Spring"));
+        String id = "/" + company.id();
+        MockHttpServletRequestBuilder request = get("/companies" + id).contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(company.id()))
+                .andExpect(jsonPath("$.name").value("Spring"));
+    }
+
 }
