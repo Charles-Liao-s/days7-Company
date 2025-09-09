@@ -29,4 +29,19 @@ public class CompanyTest {
         companyController.clear();
     }
 
+    @Test
+    public void should_return_created_company_when_post() throws Exception {
+        String requestBody = """
+                {
+                "name": "Spring"
+                }
+                """;
+        MockHttpServletRequestBuilder request = post("/companies").contentType(MediaType.APPLICATION_JSON).content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("Spring"));
+    }
+
 }

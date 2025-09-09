@@ -10,9 +10,17 @@ import java.util.Objects;
 
 
 @RestController
-@RequestMapping("/company")
+@RequestMapping("/companies")
 public class CompanyController {
     List<Company> companies = new ArrayList<>();
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Company create(@RequestBody Company company) {
+        Company newCompany = new Company(companies.size() + 1, company.name());
+        companies.add(newCompany);
+        return newCompany;
+    }
 
     public void clear() {
         companies.clear();
