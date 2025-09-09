@@ -130,10 +130,34 @@ public class EmployeesTest {
 
     @Test
     public void should_return_delete_employee_when_delete_employee() throws Exception {
-        Employee employee = employeeController.create(new Employee(null, "John", 32, "male", 5000.0));
-        String id = "/" + employee.id();
+        Employee expect = employeeController.create(new Employee(null, "John", 32, "male", 5000.0));
+        String id = "/" + expect.id();
         MockHttpServletRequestBuilder request = delete("/employees" + id).contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void should_return_page_query_when_get_employee_by_page() throws Exception {
+        Employee expect1 = employeeController.create(new Employee(null, "John1", 32, "male", 5000.0));
+        Employee expect2 = employeeController.create(new Employee(null, "John2", 28, "female", 6000.0));
+        Employee expect3 = employeeController.create(new Employee(null, "John3", 30, "male", 7000.0));
+        Employee expect4 = employeeController.create(new Employee(null, "John4", 28, "female", 6000.0));
+        Employee expect5 = employeeController.create(new Employee(null, "John5", 30, "male", 7000.0));
+        MockHttpServletRequestBuilder request = get("/employees?page=1&size=2")
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$.[0].id").value(expect1.id()))
+                .andExpect(jsonPath("$.[0].name").value(expect1.name()))
+                .andExpect(jsonPath("$.[0].age").value(expect1.age()))
+                .andExpect(jsonPath("$.[0].gender").value(expect1.gender()))
+                .andExpect(jsonPath("$.[0].salary").value(expect1.salary()))
+                .andExpect(jsonPath("$.[1].id").value(expect2.id()))
+                .andExpect(jsonPath("$.[1].name").value(expect2.name()))
+                .andExpect(jsonPath("$.[1].age").value(expect2.age()))
+                .andExpect(jsonPath("$.[1].gender").value(expect2.gender()))
+                .andExpect(jsonPath("$.[1].salary").value(expect2.salary()));
     }
 }

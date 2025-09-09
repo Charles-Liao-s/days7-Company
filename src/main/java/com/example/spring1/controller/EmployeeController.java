@@ -32,7 +32,7 @@ public class EmployeeController {
                 .orElse(null);
     }
 
-    public void clear(){
+    public void clear() {
         employees.clear();
     }
 
@@ -65,6 +65,16 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         employees.removeIf(employee -> Objects.equals(employee.id(), id));
+    }
+
+    @GetMapping(params = {"page", "size"})
+    public List<Employee> pageQuery(@RequestParam int page, @RequestParam int size) {
+        int fromIndex = (page - 1) * size;
+        int toIndex = Math.min(fromIndex + size, employees.size());
+        if (fromIndex >= employees.size()) {
+            return new ArrayList<>();
+        }
+        return employees.subList(fromIndex, toIndex);
     }
 
 }
