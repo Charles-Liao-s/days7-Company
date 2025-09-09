@@ -36,6 +36,21 @@ public class CompanyController {
         return new ArrayList<>(companies); // 返回副本以避免并发修改异常
     }
 
+    @PutMapping("/{id}")
+    public Company update(@PathVariable Integer id, @RequestBody Company company) {
+        Company existingCompany = companies.stream()
+                .filter(c -> Objects.equals(c.id(), id))
+                .findFirst()
+                .orElse(null);
+        if (existingCompany != null) {
+            companies.remove(existingCompany);
+            Company updatedCompany = new Company(id, company.name());
+            companies.add(updatedCompany);
+            return updatedCompany;
+        }
+        return null;
+    }
+
     public void clear() {
         companies.clear();
     }

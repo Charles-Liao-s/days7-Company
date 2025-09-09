@@ -72,4 +72,22 @@ public class CompanyTest {
                 .andExpect(jsonPath("$.[1].name").value(expect2.name()));
     }
 
+    @Test
+    public void should_return_updated_company_when_update_company() throws Exception {
+        Company company = companyController.create(new Company(null, "Spring"));
+        String id = "/" + company.id();
+        String requestBody = """
+                {
+                "name": "Spring Boot"
+                }
+                """;
+
+        MockHttpServletRequestBuilder request = put("/companies" + id).contentType(MediaType.APPLICATION_JSON).content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(company.id()))
+                .andExpect(jsonPath("$.name").value("Spring Boot"));
+    }
+
 }
